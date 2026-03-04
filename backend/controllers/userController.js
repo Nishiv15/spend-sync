@@ -414,18 +414,47 @@ const deleteUser = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = 20;
+    const requester = req.user;
+    
+    // Manager-only
+    if (requester.userType !== "manager") {
+      return res.status(403).json({
+        message: "Only managers can view users"
+      });
+    }
+
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit, 10) || 20);
     const skip = (page - 1) * limit;
 
-    const users = await User.find().skip(skip).limit(limit);
-    const totalUsers = await User.countDocuments();
-    const totalPages = Math.ceil(totalUsers / limit);
+    // applying filter for removing non-active users
+    const filter = {
+      company: requester.company,
+      isActive: true
+    };
 
-    res.json({
-      users,
+    // run count and find in parallel for correctness and performance
+    const [totalUsers, users] = await Promise.all([
+      User.countDocuments(filter),
+      User.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 }).lean()
+    ]);
+
+    const totalPages = Math.max(1, Math.ceil(totalUsers / limit));
+    const currentPage = Math.min(page, totalPages);
+
+    // if requested page > totalPages, refetch the last page users
+    let pagedUsers = users;
+    if (page > totalPages && totalUsers > 0) {
+      const newSkip = (totalPages - 1) * limit;
+      pagedUsers = await User.find(filter).skip(newSkip).limit(limit).sort({ createdAt: -1 }).lean();
+    }
+
+    return res.json({
+      users: pagedUsers,
+      totalUsers,
       totalPages,
-      currentPage: page,
+      currentPage,
+      limit
     });
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch users" });
