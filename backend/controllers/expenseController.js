@@ -80,8 +80,7 @@ const listExpenses = async (req, res) => {
   try {
     const companyId = req.user.company;
     const userId = req.user._id;
-    // const { status = "all" } = req.query;
-    const { status, page = 1, limit = 20 } = req.query;
+    const { status = "all", page = 1, limit = 20, search = "" } = req.query;
 
     const pageNumber = Number(page);
     const limitNumber = Number(limit);
@@ -91,28 +90,40 @@ const listExpenses = async (req, res) => {
       return res.status(400).json({ message: "User not associated with a company" });
     }
 
-    let filter = { company: companyId };
+    let baseFilter = { company: companyId };
 
     if (status === "draft") {
       // Only own drafts
-      filter.status = "draft";
-      filter.createdBy = userId;
-
+      baseFilter.status = "draft";
+      baseFilter.createdBy = userId;
     } else if (["submitted", "approved", "rejected"].includes(status)) {
       // Company-wide visible statuses
-      filter.status = status;
-
+      baseFilter.status = status;
     } else {
       // status === "all"
-      filter.$or = [
+      baseFilter.$or = [
         { status: { $ne: "draft" } },
         { status: "draft", createdBy: userId }
       ];
     }
 
-    const total = await ExpenseRequest.countDocuments(filter);
+    let finalFilter = baseFilter;
 
-    const expenses = await ExpenseRequest.find(filter)
+    if (search.trim()) {
+      const escapedSearch = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      
+      finalFilter = {
+        $and: [
+          baseFilter,
+          { title: { $regex: escapedSearch, $options: "i" } }
+        ]
+      };
+    }
+
+    // Use finalFilter for the queries
+    const total = await ExpenseRequest.countDocuments(finalFilter);
+
+    const expenses = await ExpenseRequest.find(finalFilter)
       .populate("createdBy", "name email userType")
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -121,7 +132,7 @@ const listExpenses = async (req, res) => {
 
     return res.json({
       page: pageNumber,
-      totalPages: Math.ceil(total / limitNumber),
+      totalPages: Math.max(1, Math.ceil(total / limitNumber)),
       totalItems: total,
       count: expenses.length,
       expenses,

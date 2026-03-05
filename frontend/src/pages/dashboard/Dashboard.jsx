@@ -18,14 +18,12 @@ const Dashboard = () => {
   });
 
   const [recentExpenses, setRecentExpenses] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-
         const [
           totalRes,
           draftRes,
@@ -34,29 +32,24 @@ const Dashboard = () => {
           submittedRes,
           recentRes,
         ] = await Promise.all([
-          getExpenses(),
-          getExpenses("draft"),
-          getExpenses("approved"),
-          getExpenses("rejected"),
-          getExpenses("submitted"),
-          getExpenses("all"),
+          getExpenses({ status: "all", limit: 1 }),
+          getExpenses({ status: "draft", limit: 1 }),
+          getExpenses({ status: "approved", limit: 1 }),
+          getExpenses({ status: "rejected", limit: 1 }),
+          getExpenses({ status: "submitted", limit: 1 }),
+          getExpenses({ status: "all", limit: 5 }),
         ]);
 
         setStats({
-          total: totalRes.data.count,
-          draft: draftRes.data.count,
-          approved: approvedRes.data.count,
-          rejected: rejectedRes.data.count,
-          submitted: submittedRes.data.count,
+          total: totalRes.data.totalItems || 0,
+          draft: draftRes.data.totalItems || 0,
+          approved: approvedRes.data.totalItems || 0,
+          rejected: rejectedRes.data.totalItems || 0,
+          submitted: submittedRes.data.totalItems || 0,
         });
 
-        // Sort by createdAt DESC
-        const sortedRecent = [...recentRes.data.expenses].sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-        );
-
-        //show only latest 5
-        setRecentExpenses(sortedRecent.slice(0, 5));
+        setRecentExpenses(recentRes.data.expenses || []);
+        
       } catch (error) {
         console.error("Dashboard data error:", error);
       } finally {
@@ -70,7 +63,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
+      <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold text-gray-800">
           Welcome, {user?.name}
         </h1>
@@ -118,34 +111,35 @@ const Dashboard = () => {
           />
         )}
       </div>
+
       {/* Recent Expenses */}
-      <div className="bg-white rounded-xl shadow-sm border">
-        <div className="p-4 border-b">
+      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+        <div className="p-4 border-b bg-gray-50">
           <h2 className="font-semibold text-gray-700">Recent Expenses</h2>
         </div>
 
         {loading ? (
-          <div className="p-4 text-sm text-gray-500">
+          <div className="p-4 text-sm text-gray-500 text-center">
             Loading recent expenses...
           </div>
         ) : recentExpenses.length === 0 ? (
-          <div className="p-4 text-sm text-gray-500">No expenses found</div>
+          <div className="p-4 text-sm text-gray-500 text-center">No expenses found</div>
         ) : (
           <div className="divide-y">
             {recentExpenses.map((expense) => (
               <div
                 key={expense._id}
-                className="p-4 flex items-center justify-between text-sm"
+                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm hover:bg-gray-50 transition-colors"
               >
                 <div>
-                  <p className="font-medium text-gray-700">{expense.title}</p>
-                  <p className="text-gray-500">
-                    ₹{expense.totalAmount} • {expense.status}
+                  <p className="font-medium text-gray-800 text-base">{expense.title}</p>
+                  <p className="text-gray-500 mt-1">
+                    ₹{expense.totalAmount} • {new Date(expense.createdAt).toLocaleDateString()}
                   </p>
                 </div>
 
                 <span
-                  className={`px-2 py-1 rounded-full text-xs capitalize ${
+                  className={`px-3 py-1 rounded-full text-xs font-medium capitalize w-max ${
                     expense.status === "approved"
                       ? "bg-green-100 text-green-700"
                       : expense.status === "rejected"

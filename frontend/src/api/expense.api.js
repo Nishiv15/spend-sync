@@ -1,8 +1,10 @@
 import api from "./axios";
 
-export const getExpenses = ({ status, page = 1, limit = 20 } = {}) => {
+export const getExpenses = ({ status, page = 1, limit = 20, search = "" } = {}) => {
   const params = { page, limit };
   if (status && status !== "all") params.status = status;
+  if (search) params.search = search;
+  
   return api.get("/expenses", { params });
 };
 
