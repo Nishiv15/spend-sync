@@ -1,8 +1,8 @@
-# Corporate Expense Manager
+# SpendSync
 
 ## 📌 Overview
 
-Corporate Expense Manager is a web-based platform designed to simplify and streamline **company expense management and approval workflows**.  
+**SpendSync** is a modern, web-based platform designed to simplify and streamline **company expense management and approval workflows**.  
 It helps organizations manage employee expenses, approvals, and budget control in a **centralized, transparent, and secure** way.
 
 The system is built using the **MERN stack** and focuses on solving real-world problems faced by companies when handling expense reimbursements and approvals.
@@ -12,9 +12,9 @@ The system is built using the **MERN stack** and focuses on solving real-world p
 ## 🎯 Problem
 
 In many organizations, expense management is still handled through:
-- Emails
-- Spreadsheets
-- Manual approvals
+- Endless email chains
+- Cluttered spreadsheets
+- Manual, untraceable approvals
 - Paper receipts
 
 This leads to:
@@ -28,14 +28,13 @@ This leads to:
 
 ## 💡 Solution
 
-Corporate Expense Manager provides a **structured, role-based platform** where:
+SpendSync provides a **structured, role-based platform** where:
 
-- Employees can submit expenses easily
-- Managers can review, approve, or reject expenses
-- All actions are tracked and auditable
-- Expense lifecycle is clearly defined
-- Drafts, submissions, and approvals are securely managed
-- Password reset via OTP ensures secure account recovery
+- Employees can submit expenses easily and track their status in real-time.
+- Managers can review, approve, or reject expenses with a single click.
+- All actions are tracked and fully auditable.
+- The expense lifecycle is clearly defined from draft to resolution.
+- Company data is securely isolated, and password recovery is handled via OTP.
 
 ---
 
@@ -43,20 +42,19 @@ Corporate Expense Manager provides a **structured, role-based platform** where:
 
 ### 🔹 Manager
 - Creates and manages the company account
-- Registers employees
-- Assigns roles and approval limits
-- Reviews and approves/rejects expenses
-- Manages users (soft delete)
+- Registers employees and assigns roles
+- Reviews, approves, or rejects expenses
+- Accesses comprehensive dashboard analytics and real-time statistics
+- Manages users (including secure soft deletion)
 - Can deactivate the company
-- Has access to dashboard analytics
 
 ### 🔹 Employee
-- Logs in using credentials created by the manager
-- Creates expense requests
-- Edits or deletes expenses while in draft
-- Submits expenses for approval
-- Views expense status and history
-- Can update password from profile section
+- Logs in using credentials securely provisioned by the manager
+- Creates and manages expense requests
+- Utilizes the "Draft" feature to edit or delete expenses before final submission
+- Submits expenses for official approval
+- Views personal expense status, history, and analytics
+- Updates profile and manages password settings
 
 ---
 
@@ -70,23 +68,22 @@ Draft → Submitted → Approved / Rejected
 
 - **Submitted**
   - Locked from editing
-  - Awaiting manager approval
+  - Sent instantly to the manager for review
 
 - **Approved / Rejected**
-  - Final state
-  - Stored permanently for audit purposes
+  - Final resolved state
+  - Stored permanently for clear financial auditing
 
 ---
 
 ## 🔐 Security & Access Control
 
 - Role-based access control (Manager / Employee)
-- Company-level data isolation
-- Draft expenses visible only to creators
-- Soft deletion for users and companies
-- Backend-enforced authorization rules
-- JWT-based authentication
-- No self-approval policy for expense approvals
+- Strict company-level data isolation
+- Draft expenses visible only to their creators
+- Soft deletion for users and companies to prevent accidental data loss
+- Backend-enforced authorization rules and JWT-based authentication
+- Strict "No Self-Approval" policy enforced at the API level
 - OTP-based password reset via email
 
 ---
@@ -94,41 +91,28 @@ Draft → Submitted → Approved / Rejected
 ## 🧱 Technology Stack
 
 ### Backend
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
+- Node.js & Express.js
+- MongoDB & Mongoose
 - JWT Authentication
 - Resend API (for OTP email verification)
 
 ### Frontend
 - React.js (Vite)
-- Tailwind CSS
+- Tailwind CSS (Fully responsive UI)
 - JavaScript
 - Axios
-- Zustand (state management)
+- Zustand (State management)
+- Lucide React (Iconography)
 
 ---
 
 ## 🗂️ Key Features
 
-- Company-based multi-user system
-- Secure authentication and authorization
-- Draft-based expense creation
-- Approval workflow
-- Approval history tracking
-- Expense filtering by status
-- URL-based attachment support
-- Dashboard with expense statistics
-- Profile management and password update
-- Soft deletion for data safety
-- Scalable architecture for future admin features
-
----
-
-## 🚀 Future Enhancements
-
-Planned improvements include:
-- Notification system (email / in-app)
-- Pagination (for expenses)
-- Verified email domain configuration for production
+- **Modern Landing Page:** Attractive, responsive entry point explaining the product workflow.
+- **Multi-Tenant Architecture:** Company-based multi-user system.
+- **Advanced Filtering & Search:** Real-time search by title, and filtering by status, department, and date ranges.
+- **Optimized Pagination:** Fast data loading and smooth table navigation.
+- **Approval Workflow:** Clear status tracking and history logs.
+- **Dashboard Analytics:** Visual breakdown of expense statuses and recent activities.
+- **URL-Based Attachments:** Easy linking for digital receipts.
+- **Soft Deletion:** Data safety for users and organizational records.
