@@ -19,7 +19,7 @@ const CreateExpense = () => {
   const [form, setForm] = useState({
     title: "",
     department: "",
-    items: [{ description: "", quantity: 1, unitPrice: 0 }],
+    items: [{ description: "", qty: 1, unitPrice: 0 }],
     attachments: [""],
   });
 
@@ -45,10 +45,10 @@ const CreateExpense = () => {
             expense.items?.length > 0
               ? expense.items.map((item) => ({
                   description: item.description || "",
-                  quantity: item.quantity ?? item.qty ?? 1,
+                  qty: item.qty ?? item.quantity ?? 1,
                   unitPrice: item.unitPrice ?? 0,
                 }))
-              : [{ description: "", quantity: 1, unitPrice: 0 }],
+              : [{ description: "", qty: 1, unitPrice: 0 }],
           attachments:
             expense.attachments?.length > 0 ? expense.attachments : [""],
         });
@@ -65,7 +65,7 @@ const CreateExpense = () => {
 
 
   const calculateTotalAmount = () =>
-    form.items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
+    form.items.reduce((sum, item) => sum + item.qty * item.unitPrice, 0);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -96,7 +96,7 @@ const CreateExpense = () => {
   const addItem = () =>
     setForm({
       ...form,
-      items: [...form.items, { description: "", quantity: 1, unitPrice: 0 }],
+      items: [...form.items, { description: "", qty: 1, unitPrice: 0 }],
     });
 
   const removeItem = (index) => {
@@ -215,9 +215,9 @@ const CreateExpense = () => {
                 label="Quantity"
                 type="number"
                 min={1}
-                value={item.quantity}
+                value={item.qty}
                 onChange={(e) =>
-                  handleItemChange(index, "quantity", Number(e.target.value))
+                  handleItemChange(index, "qty", Number(e.target.value))
                 }
               />
 
