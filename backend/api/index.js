@@ -2,11 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import connectDB from "./config/db.js";
-import companyRoutes from "./routes/companyRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import expenseRoutes from "./routes/expenseRoutes.js";
-import authRoutes from "./routes/authRoutes.js"
+import connectDB from "../config/db.js";
+import companyRoutes from "../routes/companyRoutes.js";
+import userRoutes from "../routes/userRoutes.js";
+import expenseRoutes from "../routes/expenseRoutes.js";
+import authRoutes from "../routes/authRoutes.js"
 
 
 dotenv.config();
@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // database
-connectDB();
+await connectDB();
 
 // test route
 app.get("/", (req, res) => {
@@ -38,4 +38,4 @@ app.use("/api/auth", authRoutes);
 
 // const PORT = process.env.PORT || 5000;
 // app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-export {app};
+export default app;
