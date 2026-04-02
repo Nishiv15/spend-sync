@@ -179,6 +179,14 @@ const ExpenseDetails = () => {
 
       {/* ACTIONS */}
       <div className="flex gap-3 flex-wrap">
+
+        <button
+          onClick={() => navigate("/app/expenses")}
+          className="px-6 py-2 rounded-lg border text-sm"
+        >
+          Back
+        </button>
+
         {/* EMPLOYEE ACTIONS */}
         {isOwner && isDraft && (
           <>
