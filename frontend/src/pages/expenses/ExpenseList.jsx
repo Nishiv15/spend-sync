@@ -125,49 +125,63 @@ const ExpenseList = () => {
           </thead>
 
           <tbody className="divide-y">
-            {expenses.map((expense) => (
-              <tr
-                key={expense._id}
-                className="hover:bg-gray-50 cursor-pointer"
-                onClick={() => navigate(`/app/expenses/${expense._id}`)}
-              >
-                <td className="px-4 py-3 font-medium text-gray-700">
-                  {expense.title}
+            {loading ? (
+              <tr>
+                <td colSpan={6} className="text-center p-4 text-gray-500">
+                  Loading...
                 </td>
-
-                <td className="px-4 py-3 text-gray-600">
-                  {expense.department || "-"}
-                </td>
-
-                <td className="px-4 py-3">₹{expense.totalAmount}</td>
-
-                <td className="px-4 py-3">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs capitalize ${
-                      expense.status === "approved"
-                        ? "bg-green-100 text-green-700"
-                        : expense.status === "rejected"
-                          ? "bg-red-100 text-red-700"
-                          : expense.status === "submitted"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {expense.status}
-                  </span>
-                </td>
-
-                <td className="px-4 py-3 text-gray-500">
-                  {new Date(expense.createdAt).toLocaleDateString()}
-                </td>
-
-                {user?.userType === "manager" && (
-                  <td className="px-4 py-3 text-gray-600">
-                    {expense.createdBy?.name || "-"}
-                  </td>
-                )}
               </tr>
-            ))}
+            ) : expenses.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="text-center p-4 text-gray-500">
+                  No expenses found
+                </td>
+              </tr>
+            ) : (
+              expenses.map((expense) => (
+                <tr
+                  key={expense._id}
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => navigate(`/app/expenses/${expense._id}`)}
+                >
+                  <td className="px-4 py-3 font-medium text-gray-700">
+                    {expense.title}
+                  </td>
+
+                  <td className="px-4 py-3 text-gray-600">
+                    {expense.department || "-"}
+                  </td>
+
+                  <td className="px-4 py-3">₹{expense.totalAmount}</td>
+
+                  <td className="px-4 py-3">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs capitalize ${
+                        expense.status === "approved"
+                          ? "bg-green-100 text-green-700"
+                          : expense.status === "rejected"
+                            ? "bg-red-100 text-red-700"
+                            : expense.status === "submitted"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      {expense.status}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-3 text-gray-500">
+                    {new Date(expense.createdAt).toLocaleDateString()}
+                  </td>
+
+                  {user?.userType === "manager" && (
+                    <td className="px-4 py-3 text-gray-600">
+                      {expense.createdBy?.name || "-"}
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
