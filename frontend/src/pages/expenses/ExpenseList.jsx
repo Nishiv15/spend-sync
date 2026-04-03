@@ -188,51 +188,57 @@ const ExpenseList = () => {
 
       {/* Mobile card view */}
       <div className="md:hidden space-y-3">
-        {expenses.map((expense) => (
-          <div
-            key={expense._id}
-            onClick={() => navigate(`/app/expenses/${expense._id}`)}
-            className="bg-white border rounded-xl p-4 shadow-sm cursor-pointer active:scale-[0.99]"
-          >
-            <div className="flex justify-between items-start">
-              <h2 className="font-medium text-gray-800 text-sm">
-                {expense.title}
-              </h2>
+        {loading ? (
+          <div className="text-center text-gray-500">Loading...</div>
+        ) : expenses.length === 0 ? (
+          <div className="text-center text-gray-500">No expenses found</div>
+        ) : (
+          expenses.map((expense) => (
+            <div
+              key={expense._id}
+              onClick={() => navigate(`/app/expenses/${expense._id}`)}
+              className="bg-white border rounded-xl p-4 shadow-sm cursor-pointer active:scale-[0.99]"
+            >
+              <div className="flex justify-between items-start">
+                <h2 className="font-medium text-gray-800 text-sm">
+                  {expense.title}
+                </h2>
 
-              <span
-                className={`px-2 py-1 rounded-full text-xs capitalize ${
-                  expense.status === "approved"
-                    ? "bg-green-100 text-green-700"
-                    : expense.status === "rejected"
-                      ? "bg-red-100 text-red-700"
-                      : expense.status === "submitted"
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-gray-100 text-gray-600"
-                }`}
-              >
-                {expense.status}
-              </span>
-            </div>
-
-            <div className="mt-2 text-sm text-gray-600">
-              Department: {expense.department || "-"}
-            </div>
-
-            <div className="mt-1 text-sm text-gray-600">
-              Amount: ₹{expense.totalAmount}
-            </div>
-
-            <div className="mt-1 text-xs text-gray-500">
-              {new Date(expense.createdAt).toLocaleDateString()}
-            </div>
-
-            {user?.userType === "manager" && (
-              <div className="mt-1 text-xs text-gray-500">
-                Created by: {expense.createdBy?.name || "-"}
+                <span
+                  className={`px-2 py-1 rounded-full text-xs capitalize ${
+                    expense.status === "approved"
+                      ? "bg-green-100 text-green-700"
+                      : expense.status === "rejected"
+                        ? "bg-red-100 text-red-700"
+                        : expense.status === "submitted"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  {expense.status}
+                </span>
               </div>
-            )}
-          </div>
-        ))}
+
+              <div className="mt-2 text-sm text-gray-600">
+                Department: {expense.department || "-"}
+              </div>
+
+              <div className="mt-1 text-sm text-gray-600">
+                Amount: ₹{expense.totalAmount}
+              </div>
+
+              <div className="mt-1 text-xs text-gray-500">
+                {new Date(expense.createdAt).toLocaleDateString()}
+              </div>
+
+              {user?.userType === "manager" && (
+                <div className="mt-1 text-xs text-gray-500">
+                  Created by: {expense.createdBy?.name || "-"}
+                </div>
+              )}
+            </div>
+          ))
+        )}
       </div>
 
       {/* PAGINATION */}
